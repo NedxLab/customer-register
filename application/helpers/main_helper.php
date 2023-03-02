@@ -4,7 +4,7 @@
 /* Input Cleansing/Sterilization */
 function protect($string)
 {
-	$string = (htmlentities(trim($string), ENT_QUOTES));
+	$string = (htmlentities($string, ENT_QUOTES));
 	return $string;
 }
 ?>
