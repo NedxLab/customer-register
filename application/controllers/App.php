@@ -48,14 +48,18 @@ class App extends CI_Controller
 				$config['upload_path'] = FCPATH . './uploads/images';
 				$config['allowed_types'] = 'png';
 				$config['max_size'] = 100000;
-				$config['max_width'] = 1024;
-				$config['max_height'] = 768;
+				$config['max_width'] = 64;
+				$config['min_width'] = 64;
+				$config['max_height'] = 64;
+				$config['min_height'] = 64;
 				$this->load->library('upload', $config);
 				$this->upload->initialize($config);
 				if (!$this->upload->do_upload('image')) {
 
 					$error = array('error' => $this->upload->display_errors());
-					print_r($error);
+
+					$error_message .= "<p class='text-danger'>Sorry, Upload Failed!, Try another file with another dimension.</p>";
+
 
 				} else {
 					$data = array('image_metadata' => $this->upload->data());
@@ -74,13 +78,13 @@ class App extends CI_Controller
 							$_FILES['file']['error'] = $_FILES['files']['error'][$i];
 							$_FILES['file']['size'] = $_FILES['files']['size'][$i];
 
-							$config['upload_path'] = 'uploads/pdf';
+							$config['upload_path'] = FCPATH . './uploads/pdf';
 							$config['allowed_types'] = 'pdf';
 							$config['max_size'] = '50000';
 							$config['file_name'] = $_FILES['files']['name'][$i];
 
 							$this->load->library('upload', $config);
-
+							$this->upload->initialize($config);
 							if ($this->upload->do_upload('file')) {
 								$uploadData = $this->upload->data();
 								$filename = $uploadData['file_name'];
@@ -88,7 +92,8 @@ class App extends CI_Controller
 								$data['totalFiles'][] = $filename;
 							} else {
 								$error = array('error' => $this->upload->display_errors());
-								print_r($error);
+
+								$error_message .= "<p class='text-danger'>Sorry, Upload Failed!</p>";
 							}
 						}
 
@@ -116,6 +121,7 @@ class App extends CI_Controller
 
 
 		$data["error_message"] = $error_message;
+		$data['geCountries'] = $this->Users->getAllCountries();
 		$this->load->view('form', $data);
 	}
 	public function getstates()
